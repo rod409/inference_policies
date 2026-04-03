@@ -136,11 +136,9 @@ platforms and use cases, MLPerf has defined four different scenarios as
 described in the table below.
 
 |===
-|Scenario |Query Generation |Duration |Samples/query |Latency Constraint |Tail Latency | Performance Metric
-|Single stream |LoadGen sends next query as soon as SUT completes the previous query | 600 seconds |1 |None |90%* | 90%-ile early-stopping latency estimate
-|Server/Interactive |LoadGen sends new queries to the SUT according to a Poisson distribution | 600 seconds |1 |Benchmark specific |99%* | Maximum Poisson throughput parameter supported
-|Offline |LoadGen sends all samples to the SUT at start in a single query | 1 query and 600 seconds | At least 24,576** |None |N/A | Measured throughput
-|Multistream | Loadgen sends next query, as soon as SUT completes the previous query | 600 seconds | 8 | None | 99%* | 99%-ile early-stopping latency estimate|
+|Scenario |Query Generation 
+|Single stream |LoadGen sends next query as soon as SUT completes the previous query 
+|Constant stream |LoadGen sends new queries to the SUT at a fixed cadence
 |===
 
  ** - If the dataset used for the accuracy run of the benchmark task is of size less than 24,576 say `N`, then the Offline scenario query only needs to have at least `N` samples.
@@ -167,32 +165,17 @@ The number of runs required for each scenario is defined below:
 
 * Single Stream: 1
 
-* Server: 1
-
-* Offline: 1
-
-* Multistream: 1
+* Constant Stream: 1
 
 Each sample has the following definition:
 
 |===
 |Model| definition of one sample
-|Resnet50-v1.5	    |one image
-|Retinanet	    |one image
-|3D UNET	        |one image
-|BERT	            |one sequence
-|DLRMv3	            |one request (containing one user history sequence and 2048 candidates)
-|WAN-2.2-T2V-A14B	            |a pair of positive and negative prompts
-|Llama2-70b	            |one sequence
-|Mixtral-8x7B            |one sequence
-|RGAT	            |one node id
-|Llama3.1-405B	            |one sequence
-|PointPainting             | five images and one lidar point cloud
-|Llama3.1-8B	            |one sequence
-|DeepSeek-r1            |one sequence
-|GPT-OSS-120B            |one sequence
-|Qwen3-VL-235B-A22B            |one prompt that contains some text and a base64-encoded image
-|Whisper	            |one audio
+|SSD	          |one image
+|DeepLabv3+    |one image
+|BEVFormer	    |six images
+|UniAD         |six images
+|Llama-3.1-8B	 |one prompt
 |===
 
 == Benchmarks
