@@ -230,109 +230,24 @@ time.
 
 ==== Constraints for the Closed division
 
-The inference benchmark suite has two categories -- Datacenter and Edge (defined herein as non-datacenter) systems. The suite has a carrying capacity of 11 benchmarks i.e at any point in time, the number of benchmarks will not exceed 10 in each category. The minimum requirements for a datacenter system are defined below:
+The automotive benchmark suite defines tasks and requirements for the closed division. Submitters may choose which benchmarks and scenarios to submit.
 
-===== Minimum requirements of a datacenter system
-====== ECC
-A Datacenter submission must use ECC in their DRAM and HBM memories, and ECC must be enabled for all performance and accuracy runs. No requirements are imposed on SRAM.
-
-====== Networking (from the v3.0 round)
-A Datacenter system must be equipped with all the necessary networking required by the system architecture described in the <<LoadGen Operation>> section.  The details of the networking components must be described in the appropriate field of the https://github.com/mlcommons/policies/blob/master/submission_rules.adoc#system_desc_id-json-metadata[System JSON].  All necessary networking must be populated if power is measured along with performance.
-
-
-The suites share multiple benchmarks, but characterize them with different requirements. Read the specifications carefully.
-The Datacenter suite includes the following benchmarks:
+Benchmarks:
 
 |===
-|Area |Task |Model |Dataset |QSL Size |Quality |Server latency constraint
-|Vision |Object detection |Retinanet |OpenImages (800x800) | 64 | 99% of FP32 (0.3755 mAP) | 100 ms
-|Vision |Medical image segmentation |3D UNET |KiTS 2019 | 42 | 99% of FP32 and 99.9% of FP32 (0.86330 mean DICE score) | N/A
-|Language |Summarization |Llama3.1-8B |CNN Dailymail (v3.0.0, max_seq_len=2048) | 13368 | 99% of FP32 and 99.9% of FP32 (rouge1=42.9865, rouge2=20.1235, rougeL=29.9881). Additionally, for both cases the total generation length of the texts should be more than 90% of the reference (gen_len=8167644)| Conversational category: TTFT/TPOT: 2000 ms/100 ms. Interactive category: TTFT/TPOT: 500 ms/30 ms.footnote:llm_ttft_tpot[]
-|Language |Question Answering |Llama2-70b |OpenOrca (max_seq_len=1024) | 24576 | 99% of FP32 and 99.9% of FP32 (rouge1=44.4312, rouge2=22.0352, rougeL=28.6162). Additionally, for both cases the generation length of the tokens per sample should be more than 90% of the reference (tokens_per_sample=294.45)| Conversational category: TTFT/TPOT: 2000 ms/200 ms. Interactive category: TTFT/TPOT: 450 ms/40 ms.footnote:llm_ttft_tpot[]
-|Language |Text Generation |Llama3.1-405B |Subset of LongBench, LongDataCollections, Ruler, GovReport | 8313 | 99% of FP16 ((GovReport + LongDataCollections + 65 Sample from LongBench)rougeL=21.6666, (Remaining samples of the dataset)exact_match=90.1335). Additionally, for both cases tokens per sample should be between than 90% and 110% of the reference (tokens_per_sample=684.68)| Server: TTFT/TPOT: 6000 ms/175 ms. Interactive: TTFT/TPOT: 4500 ms/80 ms.footnote:llm_ttft_tpot[]
-|Language |Text Generation (Question Answering, Math and Code Generation) |Mixtral-8x7B |OpenOrca (5k samples, max_seq_len=2048), GSM8K (5k samples of the train split, max_seq_len=2048), MBXP (5k samples, max_seq_len=2048) | 15000 | 99% of FP16 ((OpenOrca)rouge1=45.5989, (OpenOrca)rouge2=23.3526, (OpenOrca)rougeL=30.4608, (gsm8k)Accuracy=73.66, (mbxp)Accuracy=60.16). Additionally, for both cases the tokens per sample should be between than 90% and 110% of the reference (tokens_per_sample=144.84)| TTFT/TPOT: 2000 ms/200 ms.footnote:llm_ttft_tpot[]
-|Language |Reasoning |DeepSeek-r1 |mlperf_deepseek_r1 | 4388 | 99% of FP16 (exact match 81.9132%).| Server: TTFT/TPOT: 2000 ms/80 ms. Interactive: TTFT/TPOT: 1500 ms/15 ms.footnote:llm_ttft_tpot[For LLM benchmarks, 2 latency metrics are collected - time to first token (TTFT) which measures the latency of the first token, and time per output token (TPOT) which measures the average interval between all the tokens generated.]
-|Language |Text Generation (Question Answering, Math and Code Generation) |GPT-OSS-120B |AIME25, GPQA Diamond, LiveCodeBench v6 | 6396 | 99% of 83.13%footnote:[GPT-OSS-120B evaluation uses three datasets with different repeat counts: AIME25 (8 repeats), GPQA Diamond (5 repeats), LiveCodeBench v6 (3 repeats). Final score = sum(dataset_correct / dataset_repeats).]| Server: TTFT/TPOT: 3000 ms/80 ms. Interactive: TTFT/TPOT: 2000 ms/20 ms.footnote:llm_ttft_tpot[]
-|Vision |Visual Language Model |Qwen3-VL-235B-A22B |Shopify Product Catalogue | 48289 | 99% of BF16 (Category Hierarchical F1 Score >= 0.7824)| 12 s
-|Commerce |Recommendation |DLRMv3 |Synthetic Streaming 100B Dataset | 34996 |99.9% of FP32 (NE=86.687%, Accuracy=69.651%, AUC=78.663%) | 80 ms
-|Generative |Text to video |WAN-2.2-T2V-A14B |VBench prompts | 248 |99% of BF16 (VBench score >= 69.7752) | N/A
-|Graph |Node classification |RGAT |IGBH | 788379 |99% of FP32 (72.86%) | N/A
-|Audio |Speech to Text |Whisper |LibriSpeech | 1633 |99% of FP32 and 99.9% of FP32 (WER=2.0671%) | N/A
-|===
-[[dc-required-scenarios]]
-Each Datacenter benchmark *requires* the following scenarios:
-
-|===
-|Area |Task |Required Scenarios
-|Vision |Image classification |Server, Offline
-|Vision |Object detection |Server, Offline
-|Vision |Medical image segmentation |Offline
-|Language |Summarization |(Server\| Interactive), Offline
-|Language |Question Answering |(Server\| Interactive), Offline
-|Language |Text Generation|(Server\| Interactive), Offline
-|Language |Reasoning |Server, Offline
-|Commerce |Recommendation |Server, Offline
-|Generative |Text to video |Single Stream, Offline
-|Vision |Visual Language Model |Server, Offline
-|Graph |Node classification |Offline
-|Audio |Speech to Text | Offline
-|===
-[[edge-benchmarks]]
-The Edge suite includes the following benchmarks:
-
-|===
-|Area |Task |Model |Dataset |QSL Size |Quality
-|Vision |Image classification |Resnet50-v1.5 |ImageNet (224x224) | 1024 | 99% of FP32 (76.46%)
-|Vision |Object detection |Retinanet |OpenImages (800x800) | 64 | 99% of FP32 (0.3755 mAP)
-|Vision |Medical image segmentation |3D UNET |KiTS 2019 | 42 | 99% of FP32 and 99.9% of FP32 (0.86330 mean DICE score)
-|Language |Summarization |Llama3.1-8B |CNN Dailymail (v3.0.0, max_seq_len=2048) | 5000 | 99% of FP32 and 99.9% of FP32 (rouge1=42.9865, rouge2=20.1235, rougeL=29.9881). Additionally, for both cases the total generation length of the texts should be more than 90% of the reference (gen_len=8167644)
-|Language |Language processing |BERT |SQuAD v1.1 (max_seq_len=384) | 10833 | 99% of FP32 and 99.9% of FP32(f1_score=90.874%)
-|Automotive | 3D Object Detection | PointPainting | Waymo Open Dataset | 1024 | 99.9% of FP32 (0.5425 mAP)
-|Audio |Speech to Text |Whisper |LibriSpeech | 1633 |99% of FP32 and 99.9% of FP32 (WER=2.0671%) | N/A
-|===
-[[edge-required-scenarios]]
-Each Edge benchmark *requires* the following scenarios, and sometimes permit an optional scenario:
-
-|===
-|Area |Task |Required Scenarios
-|Vision |Image classification |Single Stream, Multistream, Offline
-|Vision |Object detection |Single Stream, Multistream, Offline
-|Vision |Medical image segmentation |Single Stream, Offline
-|Language |Language processing |Single Stream, Offline
-|Language |Summarization |Single Stream, Offline
-|Automotive | 3D object detection | Single Stream with 99.9% tail latency
-|Audio |Speech to Text | Offline
+|Area |Task |Model |Dataset |QSL Size |Quality 
+|Perception |2D object detection |SSD |Cognata | 128 | 99.9% of FP32 (0.7179837  mAP) 
+|Perception |2D semantic segmentation |DeepLabv3+ |Cognata | 128 | 99.9% of FP32 (0.924355 mIOU)
+|Perception |3D object detection |Bevformer |NuScenes | 256 | 99% of FP32 (0.2683556 mAP)
+|end-to-end |Path planning | UniAD |NuScenes | 256| 99% of FP32 (0.8959 L2 Avg.)
+|IVI |LLM Q/A| LLama-3.1-8B | MMLU | 8192 | 95% of FP16 (64.96% correct answers)
 |===
 
-
-Edge submitters are allowed to infer a multistream result from single stream, and
-an offline result from either a single stream result or a measured multistream result,
-according to the following rules:
-
-- a multistream result inferred from a single stream result is 8 times the 99th percentile latency
-reported by loadgen. For example, if the single stream 99%th percentile latency is 25ms, the inferred multistream result is 200ms.
-
-- an offline result inferred from a multistream result is 8000 divided by the mean latency in milliseconds. For example,
-if the multistream result is 200ms, the inferred offline result is 40 img/s.
-
-- an offline result inferred from a single stream result is 1000 divided by the mean latency in milliseconds. For example,
-if the single stream result is 25ms, the inferred offline result is 40 img/s.
-
-The accuracy of an inferred result will be the same as the result from which it was inferred. When inferring a metric for the power table, the measured power used to calculate the metric is the same as for the base result
-
-To simplify automated processing of inferred results, the submitter should
-create copies of the directories for the inferred results under `results/`
-and `measurements/`, named according to the inferred result (either `offline` or `multistream`).
-
-Accuracy results must be reported to five significant figures with round to
-even. For example, 98.9995% should be recorded as 99.000%.
 
 For performance runs, the LoadGen will select queries uniformly at random (with
 replacement) from a test set. The minimum size of the performance test set for
-each benchmark is listed as 'QSL Size' in the table above. However, the accuracy
+each benchmark is listed as 'QSL Size' in the table above. If the tasks has a temporal dependency, such as 3D detection with BEVFormer, LoadGen will select randomly from groups of temporally connected samples defined by the dataset. The accuracy
  test must be run with one copy of the MLPerf specified validation dataset.
-
-For 3DUNet, the logical destination for the benchmark output is considered to be the network.
 
 ==== Relaxed constraints for the Open division
 
@@ -346,25 +261,6 @@ When seeking such pre-approval, it is recommended that a potential submitter con
 1. A open submission must be classified as "Available", "Preview", or "Research, Development, or Internal".
 1. The model can be of any origin (trained on any dataset, except the validation dataset; quantized in any way; sparsified in any way).
 
-==== Additional inference parameters
-
-For each of the following benchmarks it is necessary to use the following inference parameters in the closed division
-
-|===
-|Benchmark |Parameter |Value | Explanation
-|Summarization (Llama3.1-8B) |min_new_tokens |1 | Minimun number of new tokens to generate
-|Summarization (Llama3.1-8B) |max_new_tokens |128 | Maximum number of new tokens to generate
-|Summarization (Llama2-70b) |max_new_tokens |1024 | Maximum number of new tokens to generate
-|Text Generation (Llama3.1-405B) |min_new_tokens |2 | Minimun number of new tokens to generate
-|Text Generation (Llama3.1-405B) |max_new_tokens |20000 | Maximum number of new tokens to generate
-|Summarization (Mixtral-8x7B) |min_new_tokens |2 | Minimun number of new tokens to generate
-|Text Generation (Mixtral-8x7B) |max_new_tokens |1024 | Maximum number of new tokens to generate
-|Reasoning (DeepSeek) |min_new_tokens |1 | Minimun number of new tokens to generate
-|Reasoning (DeepSeek) |max_new_tokens |20000 | Maximum number of new tokens to generate
-|Text Generation (GPT-OSS-120B) |min_new_tokens |1 | Minimun number of new tokens to generate
-|Text Generation (GPT-OSS-120B) |max_new_tokens (accuracy) |32768 | Maximum number of new tokens to generate in accuracy mode
-|Text Generation (GPT-OSS-120B) |max_new_tokens (performance) |10000 | Maximum number of new tokens to generate in performance mode
-|===
 
 == Load Generator
 
