@@ -354,6 +354,62 @@ even if two or more performance results share the same source code.
 
 Note: The same code must be run for both the accuracy and performance LoadGen modes. This means the same output should be passed in QuerySampleComplete in both modes.
 
+== Categories
+
+Submitters need to choose different submission categories for their systems. These categories are defined by how close the system is to be in use for a production vehicle. During the review period submissions will be validated for their submission category.
+
+=== Hardened System
+
+These systems are intended for production and have evidence of a straightforward path to meet automotive requirements to be deployed in vehicles, on public roads. These systems are often referred to as an Electronic Control Unit (ECU) which is a general term for a computer inside a production vehicle. MLPerf Automotive does not require submitters to go through software safety certification processes for the benchmark. However, sufficient evidence of certification or for a path to certification is required.
+
+There are three Hardened System Profiles and each the benchmark in the MLPerf Automotive benchmark suite is associated with one or more profiles. 
+
+[cols="2,2,2,2,3"]
+|===
+.2+h| Hardened System Profile
+.2+h| Description
+2+h| Evidence
+.2+h| Anticipated ML Stack Production Safety Goal
+
+h| SW, Tools
+h| HW
+
+| IVI +
+(In Vehicle Infotainment)
+| Voice assistant and in vehicle AI experience
+| Security manual
+| AEC-Q100
+| Typically QM, i.e., no safety goal.
+
+| ADAS +
+(Advanced Driver Assistance System)
+| SAE L0, L1, L2, L2+, L2++ and L2+++
+| Security manual +
+Safety manual* +
+Tool qualification
+| AEC-Q100 +
+High safety integrity compute
+| Typically QM to ASIL-B depending on safety concept.
+
+| AD +
+(Autonomous Driving)
+| SAE L3 and L4
+| Security manual +
+Safety manual* +
+Tool qualification
+| AEC-Q100 +
+High safety integrity compute with availability
+| Typically ASIL-B and above at system level.
+|===
+
+=== Development System
+
+Known as EVM (EValuation Model) and is generally what SiPs provide.
+
+=== Engineering Sample 
+
+Very early silicon, internal SoC R&D.
+
 == Divisions
 
 There are three divisions of the benchmark suite, the Closed division, the Network division, and the Open
